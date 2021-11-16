@@ -1,0 +1,279 @@
+<template>
+  <div id="card">
+    <div class="card">
+      <heartSVG
+        class="card__favorite-icon"
+        :class="{ 'card__favorite-icon_active': data.isFavorite }"
+        @click="addProductFavoriteList(data)"
+      />
+      <div
+        :style="{ backgroundImage: 'url(' + data.image + ')' }"
+        class="card-image"
+      ></div>
+      <div class="card-title">
+        <h2>{{ data.dish }}</h2>
+      </div>
+      <div class="card-detail">
+        <h3>{{ data.price }} Руб.</h3>
+      </div>
+      <div class="card-text">
+        <p>
+          {{ data.description }}
+        </p>
+      </div>
+      <div class="card__product-quantity">
+        <input type="number" :value="data.quantity" @input="updateQuantity" />
+      </div>
+
+      <div class="card-product-price">
+        <button
+          type="button"
+          v-if="isShowDeleteButton"
+          @click="removeProductFromBasket(data)"
+        >
+          Удалить из корзины
+        </button>
+        <button type="button" v-else @click="toggleBasketProduct(data)">
+          В корзину
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapMutations } from "vuex";
+import heartSVG from "../assets/icons/heart.svg";
+export default {
+  name: "Card",
+  components: {
+    heartSVG,
+  },
+  props: {
+    data: {
+      type: Object,
+      required: true,
+    },
+    isShowDeleteButton: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    ...mapMutations([
+      "putOrPutAwayInBasket",
+      "removeProductFromBasketSt",
+      "addOrRemoveProductFavoriteList",
+      "updateQuantitySt",
+    ]),
+    toggleBasketProduct(product) {
+      this.putOrPutAwayInBasket(product);
+    },
+    removeProductFromBasket(product) {
+      this.removeProductFromBasketSt(product);
+    },
+    addProductFavoriteList(product) {
+      this.addOrRemoveProductFavoriteList(product.id);
+      console.log(product.id);
+    },
+    updateQuantity(e) {
+      this.updateQuantitySt({ quantity: e.target.value, id: this.data.id });
+    },
+  },
+};
+</script>
+
+<style scoped>
+.card__product-quantity {
+  margin: 3px 15px 15px;
+}
+.card__favorite-icon {
+  height: 100px;
+  width: 100px;
+  position: absolute;
+  bottom: 10px;
+  left: 230px;
+}
+.card__favorite-icon_active path {
+  fill: #ff0000;
+}
+.card__favorite-icon path:hover {
+  fill: coral;
+}
+#card {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+@media (max-width: 980px) {
+  #card {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 2rem;
+  }
+}
+
+@media (max-width: 620px) {
+  #card {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 2rem;
+  }
+}
+
+#card .card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  display: grid;
+  grid-template-columns: 300px;
+  grid-template-rows: 250px 35px 20px 150px 125px;
+  grid-template-areas: "image" "title" "detail" "text" "product-price";
+  border-radius: 18px;
+  background: white;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.9);
+  font-family: roboto;
+}
+#card .card-image {
+  grid-area: image;
+}
+
+#card .card-title {
+  grid-area: title;
+}
+
+#card .card-detail {
+  grid-area: detail;
+}
+
+#card .card-text {
+  grid-area: text;
+}
+
+#card .card-product-price {
+  grid-area: product-price;
+}
+
+#card .card-image {
+  grid-area: image;
+  background: url("../assets/images/6123150777.webp");
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+#card .card-title h2 {
+  grid-area: title;
+  margin: 10px 20px 0px;
+  color: grey;
+  font-size: 20px;
+  text-align: left;
+  line-height: 1.5em;
+}
+
+#card .card-detail {
+  grid-area: detail;
+  margin: 5px 25px;
+}
+
+#card .card-detail h3 {
+  color: grey;
+  font-size: 15px;
+  font-weight: 300;
+  text-align: left;
+  line-height: 1.5em;
+}
+
+#card .card-detail .date {
+  color: #f0b501;
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+#card .card-text {
+  grid-area: text;
+  margin: 25px;
+}
+
+#card .card-text p {
+  color: grey;
+  font-size: 17px;
+  font-weight: 300;
+  text-align: left;
+  line-height: 1.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  line-clamp: 3;
+  box-orient: vertical;
+}
+
+#card .card-product-price {
+  grid-area: product-price;
+  margin: 50px 25px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+}
+
+#card .card-product-price p {
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  height: 50px;
+  margin: 0 0 0 50px;
+  font-size: 20px;
+  color: grey;
+}
+
+#card span {
+  display: inline-block;
+  height: 50px;
+  font-size: 25px;
+}
+
+#card .card-product-price button {
+  float: left;
+  display: inline-block;
+  height: 40px;
+  width: 100px;
+  box-sizing: border-box;
+  border: transparent;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #ffffff;
+  background-color: #f0b501;
+  cursor: pointer;
+  outline: none;
+  margin-right: 20px;
+}
+
+#card .card-product-price button:hover {
+  background-color: #ffd84e;
+}
+
+#card .card:hover {
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
+}
+#card .card {
+  transition: 0.5s ease;
+  cursor: pointer;
+  margin: 30px;
+}
+</style>

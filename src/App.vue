@@ -1,14 +1,26 @@
 <template>
   <div id="app">
+    <nav id="nav">
+      <router-link to="/">Продукты</router-link>|
+      <router-link to="/favorites">Избранные товары</router-link>|
+      <router-link to="/basket">Корзина ({{ basket.length }})</router-link>
+    </nav>
+    <router-view />
   </div>
 </template>
 
 <script>
-
+import { mapActions, mapState } from "vuex";
 export default {
   name: "App",
-  components: {
-    Form,
+  methods: {
+    ...mapActions(["loadProducts"]),
+  },
+  computed: {
+    ...mapState(["basket"]),
+  },
+  created() {
+    this.loadProducts();
   },
 };
 </script>
